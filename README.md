@@ -1,2 +1,2 @@
-# CG_rulez
+# CG_rules
 Computer Graphics Project
