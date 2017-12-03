@@ -4,49 +4,27 @@
 int window_w = 640;
 int window_h = 480;
 int window_id;
+GLfloat angle;
+GLfloat fAspect;
+KeyState keyarr[NUM_KEYS];
+
+float x_pos = 0;
+float y_pos = 0;
+float z_pos = 0;
 
 int main(int argc, char** argv)
 {
-
-	/* Initialize GLUT state - glut will take any command line arguments that pertain to it or
-		 X Windows - look at its documentation at http://reality.sgi.com/mjk/spec3/spec3.html */
 	glutInit(&argc, argv);
-
-	/* Select type of Display mode:
-     Double buffer
-     RGBA color
-     Alpha components supported
-     Depth buffer */
-  glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);
-
-	/* get a 640 x 480 window */
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(window_w, window_h);
-
-	/* the window starts at the upper left corner of the screen */
   glutInitWindowPosition(0, 0);
-
-	/* Open a window */
-  window_id = glutCreateWindow("Oh, yeah!");
-
-	/* Register the function to do all our OpenGL drawing. */
+  window_id = glutCreateWindow("HUZZAH!");
   glutDisplayFunc(&DrawGLScene);
-
-  /* Go fullscreen.  This is as soon as possible. */
-  //glutFullScreen();
-
-  /* Even if there are no events, redraw our gl scene. */
-  glutIdleFunc(&DrawGLScene);
-
-  /* Register the function called when our window is resized. */
+  glutIdleFunc(&idle);
   glutReshapeFunc(&ReSizeGLScene);
-
-  /* Register the function called when the keyboard is pressed. */
   glutKeyboardFunc(&keyPressed);
-
-  /* Initialize our window. */
-  InitGL(640, 480);
-
-  /* Start Event Processing Engine */
+	glutKeyboardUpFunc(&keyReleased);
+  InitGL();
   glutMainLoop();
 
 	return 0;

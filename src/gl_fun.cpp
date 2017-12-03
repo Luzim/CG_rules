@@ -1,42 +1,90 @@
 #include "../include/draw.hpp"
 
 /* A general OpenGL initialization function.  Sets all of the initial parameters. */
-void InitGL(int Width, int Height)	        // We call this right after our OpenGL window is created.
+void InitGL()
 {
-  glClearColor(1, 1, 1, 0.0f);		// This Will Clear The Background Color To Black
-  glClearDepth(1.0);				// Enables Clearing Of The Depth Buffer
-  glDepthFunc(GL_LESS);				// The Type Of Depth Test To Do
-  glEnable(GL_DEPTH_TEST);			// Enables Depth Testing
-  glShadeModel(GL_SMOOTH);			// Enables Smooth Color Shading
+  GLfloat luzAmbiente[4]={0.2,0.2,0.2,1.0};
+	GLfloat luzDifusa[4]={0.7,0.7,0.7,1.0};		        // "cor"
+	GLfloat luzEspecular[4]={1.0, 1.0, 1.0, 1.0};     // "brilho"
+	GLfloat posicaoLuz[4]={0.0, 50.0, 50.0, 1.0};
 
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();				// Reset The Projection Matrix
+	// Capacidade de brilho do material
+	GLfloat especularidade[4]={1.0,1.0,1.0,1.0};
+	GLint especMaterial = 60;
 
-  gluPerspective(45.0f,(GLfloat)Width/(GLfloat)Height,0.1f,100.0f);	// Calculate The Aspect Ratio Of The Window
+ 	// Especifica que a cor de fundo da janela será preta
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-  glMatrixMode(GL_MODELVIEW);
+	// Habilita o modelo de colorização de Gouraud
+	glShadeModel(GL_SMOOTH);
+
+	// Define a refletância do material
+	glMaterialfv(GL_FRONT,GL_SPECULAR, especularidade);
+	// Define a concentração do brilho
+	glMateriali(GL_FRONT,GL_SHININESS,especMaterial);
+
+	// Ativa o uso da luz ambiente
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
+
+	// Define os parâmetros da luz de número 0
+	glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, luzDifusa );
+	glLightfv(GL_LIGHT0, GL_SPECULAR, luzEspecular );
+	glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz );
+
+	// Habilita a definição da cor do material a partir da cor corrente
+	glEnable(GL_COLOR_MATERIAL);
+	//Habilita o uso de iluminação
+	glEnable(GL_LIGHTING);
+	// Habilita a luz de número 0
+	glEnable(GL_LIGHT0);
+	// Habilita o depth-buffering
+	glEnable(GL_DEPTH_TEST);
+
+  angle=100;
+
+  for(int i = 0; i < NUM_KEYS; ++i)
+    keyarr[i] = NOTPUSHED;
 }
 
 /* The function called when our window is resized (which shouldn't happen, because we're fullscreen) */
 void ReSizeGLScene(int Width, int Height)
 {
-  if (Height==0)				// Prevent A Divide By Zero If The Window Is Too Small
-    Height=1;
+  // Especifica o tamanho da viewport
+  glViewport(0, 0, Width, Height);
 
-  glViewport(0, 0, Width, Height);		// Reset The Current Viewport And Perspective Transformation
+	// Calcula a correção de aspecto
+	fAspect = (GLfloat)Width/(GLfloat)Height;
 
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
+  // Especifica sistema de coordenadas de projeção
+	glMatrixMode(GL_PROJECTION);
 
-  gluPerspective(45.0f,(GLfloat)Width/(GLfloat)Height,0.1f,100.0f);
-  glMatrixMode(GL_MODELVIEW);
+  // Inicializa sistema de coordenadas de projeção
+	glLoadIdentity();
+
+	// Especifica a projeção perspectiva
+  gluPerspective(angle, fAspect, 0.4, 500);
+
+
 }
 
 /* The main drawing function. */
 void DrawGLScene()
 {
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		// Clear The Screen And The Depth Buffer
-  glLoadIdentity();				// Reset The View
+  // Especifica sistema de coordenadas do modelo
+	glMatrixMode(GL_MODELVIEW);
+	// Inicializa sistema de coordenadas do modelo
+	glLoadIdentity();
+	// Especifica posição do observador e do alvo
+  gluLookAt(0,80,200, 0,0,0, 0,1,0);
+	// Limpa a janela e o depth buffer
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  glTranslatef(x_pos, y_pos, z_pos);
+
+  handleMoviment();
+  glColor3f(1.0f, 0.0f, 0.0f);
+  glutSolidCube(40);
 
   // since this is double buffered, swap the buffers to display what just got drawn.
   glutSwapBuffers();
@@ -45,16 +93,35 @@ void DrawGLScene()
 /* The function called whenever a key is pressed. */
 void keyPressed(unsigned char key, int x, int y)
 {
-    /* avoid thrashing this procedure */
-    usleep(100);
+  if(key == ESC)
+  {
+    glutDestroyWindow(window_id);
+    exit(EXIT_SUCCESS);
+  }
 
-    /* If escape is pressed, kill everything. */
-    if (key == ESCAPE)
-    {
-      /* shut down our window */
-      glutDestroyWindow(window_id);
+  if(key == 'w')
+    keyarr[int('w')] = PUSHED;
+  if(key == 'a')
+    keyarr[int('a')] = PUSHED;
+  if(key == 's')
+    keyarr[int('s')] = PUSHED;
+  if(key == 'd')
+    keyarr[int('d')] = PUSHED;
+}
 
-	    /* exit the program...normal termination. */
-      exit(0);
-    }
+void keyReleased(unsigned char key, int x, int y)
+{
+  if(key == 'w')
+    keyarr[int('w')] = NOTPUSHED;
+  if(key == 'a')
+    keyarr[int('a')] = NOTPUSHED;
+  if(key == 's')
+    keyarr[int('s')] = NOTPUSHED;
+  if(key == 'd')
+    keyarr[int('d')] = NOTPUSHED;
+}
+
+void idle()
+{
+    glutPostRedisplay();
 }
