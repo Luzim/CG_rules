@@ -13,7 +13,7 @@ void InitGL()
 	GLint especMaterial = 60;
 
  	// Especifica que a cor de fundo da janela será preta
-  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Habilita o modelo de colorização de Gouraud
 	glShadeModel(GL_SMOOTH);
@@ -41,7 +41,9 @@ void InitGL()
 	// Habilita o depth-buffering
 	glEnable(GL_DEPTH_TEST);
 
-  angle=100;
+  glutSetCursor(GLUT_CURSOR_NONE);
+  glutWarpPointer(window_w/2, window_h/2);
+  //glutFullScreen();
 
   for(int i = 0; i < NUM_KEYS; ++i)
     keyarr[i] = NOTPUSHED;
@@ -63,9 +65,7 @@ void ReSizeGLScene(int Width, int Height)
 	glLoadIdentity();
 
 	// Especifica a projeção perspectiva
-  gluPerspective(angle, fAspect, 0.4, 500);
-
-
+  gluPerspective(45.0, fAspect, 0.1, 500.0);
 }
 
 /* The main drawing function. */
@@ -76,16 +76,16 @@ void DrawGLScene()
 	// Inicializa sistema de coordenadas do modelo
 	glLoadIdentity();
 	// Especifica posição do observador e do alvo
-  gluLookAt(0,80,200, 0,0,0, 0,1,0);
+  gluLookAt(x_pos, 1.0f, z_pos, x_pos + lx, 1.0f, z_pos + lz, 0, 1, 0);
 	// Limpa a janela e o depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glTranslatef(x_pos, y_pos, z_pos);
+  // glTranslatef(strafe, 0, 0);
 
   handleMoviment();
-  glColor3f(1.0f, 0.0f, 0.0f);
-  glutSolidCube(40);
+  drawSomeShit();
 
+  glFlush();
   // since this is double buffered, swap the buffers to display what just got drawn.
   glutSwapBuffers();
 }
@@ -93,32 +93,72 @@ void DrawGLScene()
 /* The function called whenever a key is pressed. */
 void keyPressed(unsigned char key, int x, int y)
 {
-  if(key == ESC)
+  switch (key)
   {
-    glutDestroyWindow(window_id);
-    exit(EXIT_SUCCESS);
-  }
+    case ESC:
+    {
+      glutDestroyWindow(window_id);
+      exit(EXIT_SUCCESS);
+    }
+    case 'w':
+    {
+      keyarr[int('w')] = PUSHED;
+      break;
+    }
+    case 'a':
+    {
+      keyarr[int('a')] = PUSHED;
+      break;
+    }
+    case 's':
+    {
+      keyarr[int('s')] = PUSHED;
+      break;
+    }
+    case 'd':
+    {
+      keyarr[int('d')] = PUSHED;
+      break;
+    }
 
-  if(key == 'w')
-    keyarr[int('w')] = PUSHED;
-  if(key == 'a')
-    keyarr[int('a')] = PUSHED;
-  if(key == 's')
-    keyarr[int('s')] = PUSHED;
-  if(key == 'd')
-    keyarr[int('d')] = PUSHED;
+    case 'c':
+    {
+      keyarr[int('c')] = PUSHED;
+      break;
+    }
+  }
 }
 
 void keyReleased(unsigned char key, int x, int y)
 {
-  if(key == 'w')
-    keyarr[int('w')] = NOTPUSHED;
-  if(key == 'a')
-    keyarr[int('a')] = NOTPUSHED;
-  if(key == 's')
-    keyarr[int('s')] = NOTPUSHED;
-  if(key == 'd')
-    keyarr[int('d')] = NOTPUSHED;
+  switch (key)
+  {
+    case 'w':
+    {
+      keyarr[int('w')] = NOTPUSHED;
+      break;
+    }
+    case 'a':
+    {
+      keyarr[int('a')] = NOTPUSHED;
+      break;
+    }
+    case 's':
+    {
+      keyarr[int('s')] = NOTPUSHED;
+      break;
+    }
+    case 'd':
+    {
+      keyarr[int('d')] = NOTPUSHED;
+      break;
+    }
+    case 'c':
+    {
+      keyarr[int('c')] = NOTPUSHED;
+      break;
+    }
+  }
 }
 
 void idle()

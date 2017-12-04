@@ -9,6 +9,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <cmath>
 #include <unistd.h>
 
 // OpenGL Graphic Library Utility Tools
@@ -16,6 +17,8 @@
 
 #define NUM_KEYS 127
 #define ESC 27
+#define SPEED 0.05
+#define MOUSE_SENSITIVITY 0.01f
 
 enum KeyState
 {
@@ -35,6 +38,14 @@ extern float x_pos;
 extern float y_pos;
 extern float z_pos;
 
+extern float lx;
+extern float lz;
+
+extern int cursor_x;
+extern int cursor_y;
+extern int xOrigin;
+extern float deltaAngle;
+extern bool left_screen;
 
 
 using namespace std;
@@ -45,10 +56,15 @@ void ReSizeGLScene(int Width, int Height);
 void DrawGLScene();
 void keyPressed(unsigned char key, int x, int y);
 void keyReleased(unsigned char key, int x, int y);
+void mouseButton(int button, int state, int x, int y);
+void mouseOutOfBounds(int state);
+void mouseMove(int x, int y);
+void mousePos(int x, int y);
 void handleMoviment();
 void idle();
 
 // Drawing functions
 void drawSomeShit();
+void drawSnowMan();
 
 #endif
