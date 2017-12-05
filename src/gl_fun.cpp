@@ -65,7 +65,7 @@ void ReSizeGLScene(int Width, int Height)
 	glLoadIdentity();
 
 	// Especifica a projeção perspectiva
-  gluPerspective(45.0, fAspect, 0.1, 500.0);
+  gluPerspective(90.0, fAspect, 0.1, 500.0);
 }
 
 /* The main drawing function. */
@@ -76,7 +76,7 @@ void DrawGLScene()
 	// Inicializa sistema de coordenadas do modelo
 	glLoadIdentity();
 	// Especifica posição do observador e do alvo
-  gluLookAt(x_pos, 1.0f, z_pos, x_pos + lx, 1.0f, z_pos + lz, 0, 1, 0);
+  gluLookAt(x_pos, y_pos, z_pos, x_pos + lx, 1.0f, z_pos + lz, 0, 1, 0);
 	// Limpa a janela e o depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

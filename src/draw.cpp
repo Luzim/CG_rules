@@ -3,6 +3,7 @@
 void drawSomeShit()
 {
 	// Draw ground
+	/**
 	glColor3f(0.9f, 0.9f, 0.9f);
 	glBegin(GL_QUADS);
 		glVertex3f(-100.0f, 0.0f, -100.0f);
@@ -10,16 +11,19 @@ void drawSomeShit()
 		glVertex3f( 100.0f, 0.0f,  100.0f);
 		glVertex3f( 100.0f, 0.0f, -100.0f);
 	glEnd();
-
+*/
         // Draw 36 SnowMen
-	for(int i = -3; i < 3; i++)
-		for(int j= -3; j < 3; j++)
+	glTranslatef(0.0f, -SIZE_CUBE-1.0f,0.0f);
+	for(int i = -4; i < 4; i++)
+		for(int j= -4; j < 4; j++)
     {
 			glPushMatrix();
 			   glTranslatef(i * 10.0f, 0.0f, j * 10.0f);
-			   drawSnowMan();
+				 j%2?drawCube(i%2):drawCube(((i+1)%2));
+
 			glPopMatrix();
 		}
+	drawWalls();
 }
 
 void drawSnowMan()
@@ -48,6 +52,42 @@ void drawSnowMan()
 	glutSolidCone(0.08f,0.5f,10,2);
 }
 
+void drawCube(int color){
+	//glScalef(0.0f,1.0f,0.0f);
+  if(color == 0){
+    glColor3f(0.647059f, 0.164706f,0.164706f);
+		glutSolidCube(SIZE_CUBE);
+  }
+	else{
+		glColor3f(1.0f, 1.0f, 1.0f);
+		glutSolidCube(SIZE_CUBE);
+	}
+
+}
+void drawWalls(){
+	glColor3f(1.0f, 0.5f , 0.5f);
+	glPushMatrix();
+		glTranslatef(-45.0f,4.0f,-5.0f);
+		glScalef(1.0f,SIZE_CUBE,SIZE_CUBE*5);
+		glutSolidCube(SIZE_CUBE/4);
+	glPopMatrix();
+
+	glPushMatrix();
+		glTranslatef(35.0f,4.0f,-5.0f);
+		glScalef(1.0f,SIZE_CUBE,SIZE_CUBE*5);
+		glutSolidCube(SIZE_CUBE/4);
+	glPopMatrix();
+
+}
+void wallFront(){
+	glColor3f(1.0f, 0.5f , 0.5f);
+	glPushMatrix();
+		glTranslatef(-45.0f,4.0f,-5.0f);
+		glScalef(1.0f,SIZE_CUBE,SIZE_CUBE*5);
+		glRotatef(-90,0.,1.,0.);
+		glutSolidCube(SIZE_CUBE/4);
+	glPopMatrix();
+}
 void handleMoviment()
 {
 	// if(angle <= -2*M_PI || angle >= 2*M_PI)

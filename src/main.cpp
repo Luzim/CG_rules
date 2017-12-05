@@ -10,7 +10,7 @@ KeyState keyarr[NUM_KEYS];
 
 float x_pos = 0.0f;
 float y_pos = 1.0f;
-float z_pos = 5.0f;
+float z_pos = 100.0f;
 
 float lx = 0.0f;
 float lz = -1.0f;

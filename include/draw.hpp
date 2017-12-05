@@ -14,11 +14,11 @@
 
 // OpenGL Graphic Library Utility Tools
 #include <GL/glut.h>
-
+#define SIZE_CUBE 8.0f
 #define NUM_KEYS 127
 #define ESC 27
-#define SPEED 0.05
-#define MOUSE_SENSITIVITY 0.01f
+#define SPEED 0.5
+#define MOUSE_SENSITIVITY 0.001f
 
 enum KeyState
 {
@@ -66,5 +66,7 @@ void idle();
 // Drawing functions
 void drawSomeShit();
 void drawSnowMan();
+void drawCube(int color);
+void drawWalls();
 
 #endif
