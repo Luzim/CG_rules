@@ -1,15 +1,54 @@
 #include "../include/draw.hpp"
 
+void initGameConfig()
+{
+  for(unsigned int i = 0; i < NUM_KEYS; ++i)
+    keyarr[i] = NOTPUSHED;
+
+    // Player initial position
+    player.pos.x = 0.0f;
+    player.pos.y = 1.0f;
+    player.pos.z = 200.0f;
+
+    // Player initial line of sight
+    player.ls.x = 0.0f;
+    player.ls.z = -1.0f;
+
+    // Camera initial configurations
+    xOrigin = 0;
+    angle = 0;
+    left_screen = false;
+
+    // Clock Timer
+    gTimer.minutes = 2;
+    gTimer.seconds = 0;
+
+    // Maze
+    for(int i = 0; i < NUM_ROW_CUBES; i++)
+  		for(int j= 0; j < NUM_COLUMN_CUBES; j++)
+      {
+        cuboids.push_back(new Cuboid);
+        cuboids[j + (i * NUM_ROW_CUBES)]->center.x = i * 20;
+        cuboids[j + (i * NUM_ROW_CUBES)]->center.y = 0;
+        cuboids[j + (i * NUM_ROW_CUBES)]->center.z = j * 20;
+
+        cuboids[j + (i * NUM_ROW_CUBES)]->height = SIZE_CUBE;
+        cuboids[j + (i * NUM_ROW_CUBES)]->length = SIZE_CUBE;
+        cuboids[j + (i * NUM_ROW_CUBES)]->depth = SIZE_CUBE;
+      }
+        // glTranslatef(i * 20.0f, 0.0f, j * 20.0f);
+}
+
 /* A general OpenGL initialization function.  Sets all of the initial parameters. */
 void InitGL()
 {
-  GLfloat luzAmbiente[4]={0.2,0.2,0.2,1.0};
-	GLfloat luzDifusa[4]={0.7,0.7,0.7,1.0};		        // "cor"
-	GLfloat luzEspecular[4]={1.0, 1.0, 1.0, 1.0};     // "brilho"
-	GLfloat posicaoLuz[4]={0.0, 50.0, 50.0, 1.0};
+  GLfloat luzAmbiente[4] = {0.2,0.2,0.2,1.0};
+	GLfloat luzDifusa[4] = {0.7,0.7,0.7,1.0};		        // "cor"
+	GLfloat luzEspecular[4] = {1.0, 1.0, 1.0, 1.0};     // "brilho"
+	GLfloat posicaoLuz[4] = {0.0, 50.0, 50.0, 1.0};
 
 	// Capacidade de brilho do material
-	GLfloat especularidade[4]={1.0,1.0,1.0,1.0};
+	GLfloat especularidade[4] = {1.0,1.0,1.0,1.0};
 	GLint especMaterial = 60;
 
  	// Especifica que a cor de fundo da janela será preta
@@ -43,10 +82,6 @@ void InitGL()
 
   glutSetCursor(GLUT_CURSOR_NONE);
   glutWarpPointer(window_w/2, window_h/2);
-  //glutFullScreen();
-
-  for(int i = 0; i < NUM_KEYS; ++i)
-    keyarr[i] = NOTPUSHED;
 }
 
 /* The function called when our window is resized (which shouldn't happen, because we're fullscreen) */
@@ -68,29 +103,32 @@ void ReSizeGLScene(int Width, int Height)
   gluPerspective(90.0, fAspect, 0.1, 500.0);
 }
 
-/* The main drawing function. */
 void DrawGLScene()
 {
-  // Especifica sistema de coordenadas do modelo
 	glMatrixMode(GL_MODELVIEW);
-	// Inicializa sistema de coordenadas do modelo
 	glLoadIdentity();
-	// Especifica posição do observador e do alvo
-  gluLookAt(x_pos, y_pos, z_pos, x_pos + lx, 1.0f, z_pos + lz, 0, 1, 0);
-	// Limpa a janela e o depth buffer
+  gluLookAt(player.pos.x, player.pos.y, player.pos.z,
+            player.pos.x + player.ls.x, player.pos.y, player.pos.z + player.ls.z,
+            0, 1, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  // glTranslatef(strafe, 0, 0);
+  // Draw enviroment
+  // drawGround();
+  // drawWalls();
+  drawMaze();
 
-  handleMoviment();
-  drawSomeShit();
+  // Game functions
+  for(unsigned int i = 0; i < cuboids.size(); ++i)
+    handleMoviment(cuboids[i]);
+
+  printTimer();
+  // normalHeight();
 
   glFlush();
-  // since this is double buffered, swap the buffers to display what just got drawn.
   glutSwapBuffers();
 }
 
-/* The function called whenever a key is pressed. */
+// The function called whenever a key is pressed.
 void keyPressed(unsigned char key, int x, int y)
 {
   switch (key)
@@ -126,9 +164,17 @@ void keyPressed(unsigned char key, int x, int y)
       keyarr[int('c')] = PUSHED;
       break;
     }
+
+    // Space bar
+    case 32:
+    {
+      keyarr[32] = PUSHED;
+      break;
+    }
   }
 }
 
+// The function called whenever a key is released.
 void keyReleased(unsigned char key, int x, int y)
 {
   switch (key)
@@ -156,6 +202,11 @@ void keyReleased(unsigned char key, int x, int y)
     case 'c':
     {
       keyarr[int('c')] = NOTPUSHED;
+      break;
+    }
+    case 32:
+    {
+      keyarr[32] = NOTPUSHED;
       break;
     }
   }

@@ -6,19 +6,54 @@
 #include <string>
 #include <sstream>
 #include <limits>
+#include <vector>
 
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
+#include <cstring>
 #include <unistd.h>
 
 // OpenGL Graphic Library Utility Tools
 #include <GL/glut.h>
-#define SIZE_CUBE 8.0f
+#define SIZE_CUBE 10
+#define NUM_ROW_CUBES 10
+#define NUM_COLUMN_CUBES 10
 #define NUM_KEYS 127
 #define ESC 27
-#define SPEED 0.5
+#define SPEED 0.0003
 #define MOUSE_SENSITIVITY 0.001f
+
+typedef struct Point
+{
+	float x;
+	float y;
+	float z;
+} Point;
+
+typedef struct Cuboid
+{
+	Point center;
+
+	float height;
+	float length;
+	float depth;
+}Cuboid;
+
+typedef struct Player
+{
+	// Player position
+	Point pos;
+
+	// Line of sight
+	Point ls;
+} Player;
+
+typedef struct gameTimer
+{
+	float minutes;
+	float seconds;
+}gameTimer;
 
 enum KeyState
 {
@@ -26,29 +61,24 @@ enum KeyState
 	PUSHED
 };
 
+using namespace std;
+
 // Some global variables
 extern int window_w;
 extern int window_h;
 extern int window_id;
-extern GLfloat angle;
 extern GLfloat fAspect;
 extern KeyState keyarr[NUM_KEYS];
 
-extern float x_pos;
-extern float y_pos;
-extern float z_pos;
+// Game variables
+extern gameTimer gTimer;
+extern Player player;
+extern vector<Cuboid*> cuboids;
 
-extern float lx;
-extern float lz;
-
-extern int cursor_x;
-extern int cursor_y;
+// Camera variables
 extern int xOrigin;
-extern float deltaAngle;
+extern float angle;
 extern bool left_screen;
-
-
-using namespace std;
 
 // OpenGL functions
 void InitGL();
@@ -60,13 +90,24 @@ void mouseButton(int button, int state, int x, int y);
 void mouseOutOfBounds(int state);
 void mouseMove(int x, int y);
 void mousePos(int x, int y);
-void handleMoviment();
 void idle();
 
+// Game functions
+void initGameConfig();
+void handleMoviment(Cuboid* cuboid);
+bool theresCollision(Cuboid* cuboid, Point player);
+
 // Drawing functions
-void drawSomeShit();
-void drawSnowMan();
-void drawCube(int color);
+void drawGround();
 void drawWalls();
+void drawCube(int color, Cuboid* cuboid);
+void drawMaze();
+void Timer(int value);
+void printTimer();
+void normalHeight();
+
+// DEBUG FROM theresCollision
+void printPlayerPos();
+void printCubeZeroPos();
 
 #endif
