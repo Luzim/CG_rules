@@ -21,8 +21,9 @@
 #define NUM_COLUMN_CUBES 10
 #define NUM_KEYS 127
 #define ESC 27
-#define SPEED 0.0003
+#define SPEED 0.02
 #define MOUSE_SENSITIVITY 0.001f
+#define COLLISION_OFFSET 0.2
 
 typedef struct Point
 {
@@ -74,6 +75,11 @@ extern KeyState keyarr[NUM_KEYS];
 extern gameTimer gTimer;
 extern Player player;
 extern vector<Cuboid*> cuboids;
+extern float tmpX;
+extern float tmpZ;
+extern bool collisionX;
+extern bool collisionY;
+extern bool collisionZ;
 
 // Camera variables
 extern int xOrigin;
@@ -94,8 +100,11 @@ void idle();
 
 // Game functions
 void initGameConfig();
-void handleMoviment(Cuboid* cuboid);
-bool theresCollision(Cuboid* cuboid, Point player);
+void handleMoviment();
+void theresCollision(Cuboid* cuboid, Point player);
+void collX(Cuboid* cuboid, Point player);
+void collY(Cuboid* cuboid, Point player);
+void collZ(Cuboid* cuboid, Point player);
 
 // Drawing functions
 void drawGround();

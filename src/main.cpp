@@ -10,6 +10,11 @@ KeyState keyarr[NUM_KEYS];
 gameTimer gTimer;
 Player player;
 vector<Cuboid*> cuboids;
+float tmpX;
+float tmpZ;
+bool collisionX;
+bool collisionY;
+bool collisionZ;
 
 bool left_screen;
 int xOrigin;

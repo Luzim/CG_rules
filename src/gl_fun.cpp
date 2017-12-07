@@ -100,17 +100,42 @@ void ReSizeGLScene(int Width, int Height)
 	glLoadIdentity();
 
 	// Especifica a projeção perspectiva
-  gluPerspective(90.0, fAspect, 0.1, 500.0);
+  gluPerspective(45.0, fAspect, 0.1, 500.0);
 }
 
 void DrawGLScene()
 {
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  handleMoviment();
+  Point current;
+  current.x = player.pos.x + tmpX;
+	current.y = player.pos.y;
+	current.z = player.pos.z + tmpZ;
+  collisionX = false;
+  collisionY = false;
+  collisionZ = false;
+
+  for(unsigned int i = 0; i < cuboids.size(); ++i)
+  {
+    theresCollision(cuboids[i], current);
+  }
+
+  if(!collisionX)
+  {
+    player.pos.x += tmpX;
+  }
+
+  if(!collisionZ)
+  {
+    player.pos.z += tmpZ;
+  }
+
   gluLookAt(player.pos.x, player.pos.y, player.pos.z,
             player.pos.x + player.ls.x, player.pos.y, player.pos.z + player.ls.z,
             0, 1, 0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   // Draw enviroment
   // drawGround();
@@ -118,13 +143,12 @@ void DrawGLScene()
   drawMaze();
 
   // Game functions
-  for(unsigned int i = 0; i < cuboids.size(); ++i)
-    handleMoviment(cuboids[i]);
+
 
   printTimer();
   // normalHeight();
 
-  glFlush();
+  // glFlush();
   glutSwapBuffers();
 }
 

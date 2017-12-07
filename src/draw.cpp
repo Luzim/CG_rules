@@ -69,48 +69,40 @@ void wallFront()
 	glPopMatrix();
 }
 
-void handleMoviment(Cuboid* cuboid)
+void handleMoviment()
 {
-	Point current;
-	float tmpX = 0;
-	float tmpZ = 0;
+	tmpX = 0;
+	tmpZ = 0;
 
 	if(keyarr['w'])
 	{
-		tmpX = player.ls.x * SPEED;
-		tmpZ = player.ls.z * SPEED;
+		tmpX += player.ls.x * SPEED;
+		tmpZ += player.ls.z * SPEED;
 		// player.pos.x += player.ls.x * SPEED;
 		// player.pos.z += player.ls.z * SPEED;
 	}
   if(keyarr['a'])
 	{
+		tmpX -= -1 * player.ls.z * SPEED;
+		tmpZ -= player.ls.x * SPEED;
 		// player.pos.x -= -1 * player.ls.z * SPEED;
 		// player.pos.z -= player.ls.x * SPEED;
 	}
   if(keyarr['s'])
 	{
-		tmpX = -1 * player.ls.x * SPEED;
-		tmpZ = -1 * player.ls.z * SPEED;
+		tmpX -= player.ls.x * SPEED;
+		tmpZ -= player.ls.z * SPEED;
 		// player.pos.x -= player.ls.x * SPEED;
 		// player.pos.z -= player.ls.z * SPEED;
 
 	}
   if(keyarr['d'])
 	{
+		tmpX += -1 * (player.ls.z * SPEED);
+		tmpZ += player.ls.x * SPEED;
 		// player.pos.x += -1 * (player.ls.z * SPEED);
 		// player.pos.z += player.ls.x * SPEED;
 	}
-
-	current.x = player.pos.x + tmpX;
-	current.y = player.pos.y;
-	current.z = player.pos.z + tmpZ;
-
-	if(!theresCollision(cuboid, current))
-	{
-		player.pos.x += tmpX;
-		player.pos.z += tmpZ;
-	}
-
 	if(keyarr['c'])
 	{
 		printCubeZeroPos();
@@ -154,6 +146,8 @@ void mouseOutOfBounds(int state)
 
 void printTimer()
 {
+	glColor3f(0.0f, 1.0f, 0.0f);
+
 	char current_time[20];
 	sprintf(current_time, "%.0f:%.0f", gTimer.minutes, gTimer.seconds);
 
@@ -190,17 +184,42 @@ void normalHeight()
 		player.pos.y -= 0.02;
 }
 
-bool theresCollision(Cuboid* cuboid, Point player)
+void theresCollision(Cuboid* cuboid, Point player)
 {
-	if( ((cuboid->center.x - cuboid->length) <= player.x && player.x <= (cuboid->center.x + cuboid->length)) &&
-		  ((cuboid->center.y - cuboid->height) <= player.y && player.y <= (cuboid->center.y + cuboid->height)) &&
-		  ((cuboid->center.z - cuboid->depth)  <= player.z && player.z <= (cuboid->center.z + cuboid->depth)) )
-			{
-				printPlayerPos();
-				return true;
-			}
+	if( (((cuboid->center.x - cuboid->length/2 - COLLISION_OFFSET) <= player.x) &&
+			(player.x <= (cuboid->center.x + cuboid->length/2 + COLLISION_OFFSET))) &&
 
-	return false;
+			(((cuboid->center.y - cuboid->height/2 - COLLISION_OFFSET) <= player.y) &&
+			(player.y <= (cuboid->center.y + cuboid->height/2 + COLLISION_OFFSET))) &&
+
+			(((cuboid->center.z - cuboid->depth/2 - COLLISION_OFFSET) <= player.z) &&
+			(player.z <= (cuboid->center.z + cuboid->depth/2 + COLLISION_OFFSET))) )
+			{
+				collX(cuboid, player);
+				collY(cuboid, player);
+				collZ(cuboid, player);
+			}
+}
+
+void collX(Cuboid* cuboid, Point player)
+{
+	if( (((cuboid->center.x - cuboid->length/2 - COLLISION_OFFSET) <= player.x) &&
+			(player.x <= (cuboid->center.x + cuboid->length/2 + COLLISION_OFFSET))) )
+			collisionX = true;
+}
+
+void collY(Cuboid* cuboid, Point player)
+{
+	if( (((cuboid->center.y - cuboid->height/2 - COLLISION_OFFSET) <= player.y) &&
+			(player.y <= (cuboid->center.y + cuboid->height/2 + COLLISION_OFFSET))) )
+				collisionY = true;
+}
+
+void collZ(Cuboid* cuboid, Point player)
+{
+	if( (((cuboid->center.z - cuboid->depth/2 - COLLISION_OFFSET) <= player.z) &&
+			(player.z <= (cuboid->center.z + cuboid->depth/2 + COLLISION_OFFSET))) )
+				collisionZ = true;
 }
 
 void printPlayerPos()
