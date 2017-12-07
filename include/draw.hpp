@@ -19,6 +19,7 @@
 #define SIZE_CUBE 10
 #define NUM_ROW_CUBES 10
 #define NUM_COLUMN_CUBES 10
+#define CORRIDOR_WIDTH 20
 #define NUM_KEYS 127
 #define ESC 27
 #define SPEED 0.02

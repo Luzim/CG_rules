@@ -28,15 +28,14 @@ void initGameConfig()
   		for(int j= 0; j < NUM_COLUMN_CUBES; j++)
       {
         cuboids.push_back(new Cuboid);
-        cuboids[j + (i * NUM_ROW_CUBES)]->center.x = i * 20;
+        cuboids[j + (i * NUM_ROW_CUBES)]->center.x = i * CORRIDOR_WIDTH;
         cuboids[j + (i * NUM_ROW_CUBES)]->center.y = 0;
-        cuboids[j + (i * NUM_ROW_CUBES)]->center.z = j * 20;
+        cuboids[j + (i * NUM_ROW_CUBES)]->center.z = j * CORRIDOR_WIDTH;
 
         cuboids[j + (i * NUM_ROW_CUBES)]->height = SIZE_CUBE;
         cuboids[j + (i * NUM_ROW_CUBES)]->length = SIZE_CUBE;
         cuboids[j + (i * NUM_ROW_CUBES)]->depth = SIZE_CUBE;
       }
-        // glTranslatef(i * 20.0f, 0.0f, j * 20.0f);
 }
 
 /* A general OpenGL initialization function.  Sets all of the initial parameters. */
